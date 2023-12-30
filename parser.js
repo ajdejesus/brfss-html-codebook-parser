@@ -34,7 +34,14 @@ for (const tableIndex in tables) {
                         Number(dataCollection[objectIndex].Data[dataIndex].Percentage),
                         Number(dataCollection[objectIndex].Data[dataIndex].WghtPercentage)
                     ];
+                const shortenedLabel = dataCollection[objectIndex].Data[dataIndex].Label.match(/(?<!\w)(Yes|No|Don't know\/Not Sure\/Refused|Don't know\/Not Sure|Male|Female)(?!\w)/);
+                if (shortenedLabel?.length) {
+                    dataCollection[objectIndex].Data[dataIndex].Label = shortenedLabel[0];
+                }
+                dataCollection[objectIndex].Data[dataIndex].Label = dataCollection[objectIndex].Data[dataIndex].Label.split('Notes')[0];
+                if (!dataCollection[objectIndex].Data[dataIndex].Value) dataCollection[objectIndex].Data.splice(dataIndex, 1);
             });
+            if (dataCollection[objectIndex].Data.every(dataObject => dataObject.Label.match(/^Number of/))) dataCollection.splice(objectIndex, 1);
         }
     }
 }
